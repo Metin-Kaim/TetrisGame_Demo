@@ -1,0 +1,11 @@
+[x] Sinirlari ayarla
+	[x] Objelerin prefabini olustur
+	[x] Objeleri yerlestir
+[x] Obje spawn islemini yap
+[x] Objelerin hareketini yap
+	[x] Objelerin asagi hareketi
+	[x] Objelerin yana hareketi
+[x] Objelerin hareketini sinirlandir
+[ ] Objelerin hareketinin sonlanmasi
+[ ] Objelerin birbiri ustune gelmemesini yap
+[ ] Objeleri dondurme islemini yap
