@@ -6,6 +6,9 @@
 	[x] Objelerin asagi hareketi
 	[x] Objelerin yana hareketi
 [x] Objelerin hareketini sinirlandir
-[ ] Objelerin hareketinin sonlanmasi
-[ ] Objelerin birbiri ustune gelmemesini yap
+[x] Objelerin hareketinin sonlanmasi
+[x] Objelerin birbiri ustune gelmemesini yap
 [ ] Objeleri dondurme islemini yap
+[ ] Bir sutun tamamen dolduðunda patlama iþlemi
+[ ] GameOver
+[?] Score

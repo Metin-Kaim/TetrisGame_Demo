@@ -22,17 +22,28 @@ public class Block : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(_blockController.WaitToDown);
+
+            if (!CheckVerMovable()) //sinirlari kontrol et
+            {
+                foreach (Transform child in transform)
+                {
+                    _blockController.cells[(int)child.position.x, (int)child.position.y] = child.gameObject;
+                }
+
+                _blockController.SpawnBlock();
+                break;
+            }
+
             Vector2 position = GetPosition();
             position.y--;
             SetPosition(position);
         }
     }
-
     public void HorizontalMove()
     {
         int horizontal = _inputReader.ReadHorizontalValue();
 
-        if (!CheckForMovable(horizontal)) return; //sinirlari kontrol et
+        if (!CheckHorMovable(horizontal)) return; //sinirlari kontrol et
 
         Vector2 position = GetPosition();
         position.x += horizontal;
@@ -43,13 +54,12 @@ public class Block : MonoBehaviour
     {
         return gameObject.transform.position;
     }
-
     private void SetPosition(Vector2 position)
     {
         gameObject.transform.position = position;
     }
 
-    public bool CheckForMovable(int hozirontal)
+    public bool CheckHorMovable(int hozirontal)
     {
         foreach (Transform child in transform)
         {
@@ -61,9 +71,31 @@ public class Block : MonoBehaviour
                 return false;
             }// X boundary check
 
-            //if (_blockController.grid[0, 0] != 0)
-                
+            if (_blockController.cells[(int)position.x, (int)position.y] != null)
+            {
+                return false;
+            }
 
+
+        }
+        return true;
+    }
+    public bool CheckVerMovable()
+    {
+        foreach (Transform child in transform)
+        {
+            Vector2 position = child.position;
+            position.y--;
+
+            if (position.y < 0)
+            {
+                return false;
+            }// Y bottom boundary check
+
+            if (_blockController.cells[(int)position.x, (int)position.y] != null)
+            {
+                return false;
+            }
         }
         return true;
     }

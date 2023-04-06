@@ -10,9 +10,13 @@ public class BlockController : MonoBehaviour
 {
     public const int BOUNDARY_X = 10, BOUNDARY_Y = 20;
 
-    public int[,] grid = new int[BOUNDARY_X, BOUNDARY_Y];
+    public GameObject[,] cells = new GameObject[BOUNDARY_X, BOUNDARY_Y];
+
+    public List<List<int>> locations = new();
 
     float _time;
+    InputReader _inputReader;
+    float temp;
 
     [SerializeField, Range(.5f, 2.5f)] float _waitToDown;
     [SerializeField] GameObject _currentObject;
@@ -23,10 +27,15 @@ public class BlockController : MonoBehaviour
     public List<GameObject> Blocks => _blocks;
 
 
+    private void Awake()
+    {
+        _inputReader = GetComponent<InputReader>();
+    }
+
     private void Start()
     {
         SpawnBlock();
-        StartCoroutine(CurrentObject.GetComponent<Block>().MoveDown());
+        temp = _waitToDown;
     }
 
     private void Update()
@@ -35,17 +44,25 @@ public class BlockController : MonoBehaviour
         {
             _time = Time.time + .2f;//.2f saniyede bir hareket et
             CurrentObject.GetComponent<Block>().HorizontalMove();
+
+            
+            if (_inputReader.IsPressedDown)//when press button "S"
+            {
+                _waitToDown = .1f;
+            }
+            else
+                _waitToDown = temp;
         }
     }
 
-    private void SpawnBlock()
+    public void SpawnBlock()
     {
-        CurrentObject = Instantiate(GetRandomItemFromList(Blocks));
+        CurrentObject = Instantiate(GetRandomItemFromList(Blocks), transform);
+        StartCoroutine(CurrentObject.GetComponent<Block>().MoveDown());
     }
 
     private GameObject GetRandomItemFromList(List<GameObject> list)
     {
         return list[Random.Range(0, list.Count)];
     }
-
 }
