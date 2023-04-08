@@ -6,6 +6,7 @@ public class InputReader : MonoBehaviour
     InputsActions _inputActions;
 
     public bool IsPressedDown { get; private set; }
+    public bool IsPressedRotate { get; private set; }
 
     private void Start()
     {
@@ -13,21 +14,25 @@ public class InputReader : MonoBehaviour
         _inputActions.Movement.Enable();
 
         _inputActions.Movement.Down.started += PressedToDown;
-        _inputActions.Movement.Down.canceled += UnpressedToDown;
+        _inputActions.Movement.Down.canceled += PressedToDown;
+
+        _inputActions.Movement.Rotate.started += PressedToRotate;
+        _inputActions.Movement.Rotate.canceled += PressedToRotate;
     }
 
     private void PressedToDown(InputAction.CallbackContext obj)
     {
-        IsPressedDown = true;
-    }
-    private void UnpressedToDown(InputAction.CallbackContext obj)
-    {
-        IsPressedDown = false;
+        IsPressedDown = obj.ReadValueAsButton();
     }
 
     public int ReadHorizontalValue()
     {
         return Mathf.RoundToInt(_inputActions.Movement.Horizontal.ReadValue<float>());
+    }
+
+    private void PressedToRotate(InputAction.CallbackContext obj)
+    {
+        IsPressedRotate = obj.ReadValueAsButton();
     }
 
 }

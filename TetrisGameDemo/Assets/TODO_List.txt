@@ -9,6 +9,6 @@
 [x] Objelerin hareketinin sonlanmasi
 [x] Objelerin birbiri ustune gelmemesini yap
 [ ] Objeleri dondurme islemini yap
-[ ] Bir sutun tamamen dolduðunda patlama iþlemi
+[ ] Bir sutun tamamen doldugunda patlama islemi
 [ ] GameOver
 [?] Score

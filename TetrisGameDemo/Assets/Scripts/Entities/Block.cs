@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Block : MonoBehaviour
@@ -8,6 +9,10 @@ public class Block : MonoBehaviour
     BlockController _blockController;
     InputReader _inputReader;
 
+    [SerializeField] Vector3 birVector;
+    [SerializeField] Vector3 ikiVector;
+    [SerializeField] Vector3 ucVector;
+    [SerializeField] Vector3 dortVector;
     private void Awake()
     {
         _gameController = GameObject.FindGameObjectWithTag("GameController");
@@ -15,6 +20,20 @@ public class Block : MonoBehaviour
         _blockController = _gameController.GetComponent<BlockController>();
 
         _inputReader = _gameController.GetComponent<InputReader>();
+    }
+
+    private void Update()
+    {
+
+        birVector.x = Mathf.RoundToInt(transform.GetChild(0).transform.position.x);
+        ikiVector.x = Mathf.RoundToInt(transform.GetChild(1).transform.position.x);
+        ucVector.x = Mathf.RoundToInt(transform.GetChild(2).transform.position.x);
+        dortVector.x = Mathf.RoundToInt(transform.GetChild(3).transform.position.x);
+
+        birVector.y = Mathf.RoundToInt(transform.GetChild(0).transform.position.y);
+        ikiVector.y = Mathf.RoundToInt(transform.GetChild(1).transform.position.y);
+        ucVector.y = Mathf.RoundToInt(transform.GetChild(2).transform.position.y);
+        dortVector.y = Mathf.RoundToInt(transform.GetChild(3).transform.position.y);
     }
 
     public IEnumerator MoveDown()
@@ -27,26 +46,28 @@ public class Block : MonoBehaviour
             {
                 foreach (Transform child in transform)
                 {
-                    _blockController.cells[(int)child.position.x, (int)child.position.y] = child.gameObject;
+                    _blockController.cells[Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y)] = child.gameObject;
                 }
-
                 _blockController.SpawnBlock();
                 break;
             }
 
             Vector2 position = GetPosition();
-            position.y--;
+            position.y = Mathf.RoundToInt(--position.y);
             SetPosition(position);
         }
     }
     public void HorizontalMove()
     {
         int horizontal = _inputReader.ReadHorizontalValue();
-
+        horizontal = Mathf.RoundToInt(horizontal);
         if (!CheckHorMovable(horizontal)) return; //sinirlari kontrol et
 
-        Vector2 position = GetPosition();
-        position.x += horizontal;
+        int x = Mathf.RoundToInt(transform.position.x);
+        int y = Mathf.RoundToInt(transform.position.y);
+        x += horizontal;
+
+        Vector2 position = new Vector2(x, y);
         SetPosition(position);
     }
 
@@ -63,15 +84,15 @@ public class Block : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Vector2 position = child.position;
-            position.x += hozirontal;
-
-            if (position.x < 0 || position.x >= BlockController.BOUNDARY_X)
+            int x = Mathf.RoundToInt(child.position.x);
+            int y = Mathf.RoundToInt(child.position.y);
+            x += hozirontal;
+            if (x < 0 || x >= BlockController.BOUNDARY_X)
             {
                 return false;
             }// X boundary check
 
-            if (_blockController.cells[(int)position.x, (int)position.y] != null)
+            if (_blockController.cells[x, y] != null)
             {
                 return false;
             }
@@ -84,19 +105,28 @@ public class Block : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Vector2 position = child.position;
-            position.y--;
+            int x = Mathf.RoundToInt(child.position.x);
+            int y = Mathf.RoundToInt(child.position.y);
 
-            if (position.y < 0)
+            y--;
+
+            if (y < 0)
             {
                 return false;
             }// Y bottom boundary check
 
-            if (_blockController.cells[(int)position.x, (int)position.y] != null)
+            if (_blockController.cells[x, y] != null)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    public void Rotate()
+    {
+        Vector3 current = transform.eulerAngles;
+        current.z += -90;
+        transform.eulerAngles = current;
     }
 }

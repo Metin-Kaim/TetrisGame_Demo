@@ -38,8 +38,17 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Down"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""bb361178-bca5-4808-9834-1de082091e6f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""28404fdd-b9d2-4c9b-b4eb-3f71417c93bc"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -90,6 +99,17 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
                     ""action"": ""Down"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""100b248e-1a2c-4831-98df-1e759d46e9b9"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -100,6 +120,7 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Horizontal = m_Movement.FindAction("Horizontal", throwIfNotFound: true);
         m_Movement_Down = m_Movement.FindAction("Down", throwIfNotFound: true);
+        m_Movement_Rotate = m_Movement.FindAction("Rotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -161,12 +182,14 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
     private IMovementActions m_MovementActionsCallbackInterface;
     private readonly InputAction m_Movement_Horizontal;
     private readonly InputAction m_Movement_Down;
+    private readonly InputAction m_Movement_Rotate;
     public struct MovementActions
     {
         private @InputsActions m_Wrapper;
         public MovementActions(@InputsActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Horizontal => m_Wrapper.m_Movement_Horizontal;
         public InputAction @Down => m_Wrapper.m_Movement_Down;
+        public InputAction @Rotate => m_Wrapper.m_Movement_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -182,6 +205,9 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
                 @Down.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnDown;
                 @Down.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnDown;
                 @Down.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnDown;
+                @Rotate.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnRotate;
             }
             m_Wrapper.m_MovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -192,6 +218,9 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
                 @Down.started += instance.OnDown;
                 @Down.performed += instance.OnDown;
                 @Down.canceled += instance.OnDown;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
             }
         }
     }
@@ -200,5 +229,6 @@ public partial class @InputsActions : IInputActionCollection2, IDisposable
     {
         void OnHorizontal(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }
