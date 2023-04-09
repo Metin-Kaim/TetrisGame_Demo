@@ -8,7 +8,9 @@
 [x] Objelerin hareketini sinirlandir
 [x] Objelerin hareketinin sonlanmasi
 [x] Objelerin birbiri ustune gelmemesini yap
-[ ] Objeleri dondurme islemini yap
+[x] Objeleri dondurme islemini yap
+	[x] Objeleri dondurme
+	[x] objelerin dondurme islemi icin kontrol sistemi
 [ ] Bir sutun tamamen doldugunda patlama islemi
 [ ] GameOver
 [?] Score

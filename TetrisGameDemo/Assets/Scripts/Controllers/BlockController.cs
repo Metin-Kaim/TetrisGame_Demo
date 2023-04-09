@@ -16,7 +16,7 @@ public class BlockController : MonoBehaviour
     public List<List<int>> locations = new();
 
     [SerializeField] GameObject sprite;
-    [SerializeField] GameObject[,] sprites=new GameObject[10,20];
+    [SerializeField] GameObject[,] sprites = new GameObject[10, 20];
 
     float _time;
     InputReader _inputReader;
@@ -39,14 +39,12 @@ public class BlockController : MonoBehaviour
 
     private void Start()
     {
-        
         temp = _waitToDown;
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 20; j++)
             {
-                print("a");
-                sprites[i,j] = Instantiate(sprite,new Vector3(i,j,0),Quaternion.identity);
+                sprites[i, j] = Instantiate(sprite, new Vector3(i, j, 0), Quaternion.identity);
             }
         }
         SpawnBlock();
@@ -54,7 +52,6 @@ public class BlockController : MonoBehaviour
 
     private void Update()
     {
-
         if (_time < Time.time && CurrentObject != null)
         {
             _time = Time.time + .2f;//.2f saniyede bir hareket et
@@ -67,11 +64,11 @@ public class BlockController : MonoBehaviour
                 _waitToDown = temp;
 
 
-            if(_inputReader.IsPressedRotate)
+            if (_inputReader.IsPressedRotate)
                 _currentBlock.Rotate();
         }
 
-        
+
     }
 
     public void SpawnBlock()
@@ -86,10 +83,8 @@ public class BlockController : MonoBehaviour
                 }
                 else
                     sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.green;
-
             }
         }
-
         CurrentObject = Instantiate(GetRandomItemFromList(Blocks), transform);
 
         _currentBlock = CurrentObject.GetComponent<Block>();
@@ -102,5 +97,5 @@ public class BlockController : MonoBehaviour
         return list[Random.Range(0, list.Count)];
     }
 
-    
+
 }

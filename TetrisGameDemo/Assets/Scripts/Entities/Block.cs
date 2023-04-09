@@ -123,10 +123,66 @@ public class Block : MonoBehaviour
         return true;
     }
 
+    public bool CheckForRotate()
+    {
+        foreach (Transform child in transform)
+        {
+            //world positions
+            int wX = Mathf.RoundToInt(child.position.x);
+            int wY = Mathf.RoundToInt(child.position.y);
+
+            //local positions
+            int lX = Mathf.RoundToInt(child.localPosition.x);
+            int lY = Mathf.RoundToInt(child.localPosition.y);
+
+            //local y = -x , x = y
+            int temp = lY;
+            lY = -lX;
+            lX = temp;
+            print($"önce --> wX: {wX}, wY: {wY}");
+            //world positions simulation after rotate
+            wX = wX + lX + lY;
+            wY = wY - lX + lY;
+
+            print($"sonra --> wX: {wX}, wY: {wY}");
+
+            if (wX < 0 || wX >= BlockController.BOUNDARY_X)
+            {
+                return false;
+            }// X boundary check
+
+            if (wY < 0)
+            {
+                return false;
+            }// Y bottom boundary check
+
+            if (_blockController.cells[wX, wY] != null)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public void Rotate()
     {
-        Vector3 current = transform.eulerAngles;
-        current.z += -90;
-        transform.eulerAngles = current;
+        if (!CheckForRotate()) return;
+
+        //Vector3 current = transform.eulerAngles;
+
+        //current.z += -90;
+        //transform.eulerAngles = current
+        foreach (Transform child in transform)
+        {
+            int lX = Mathf.RoundToInt(child.localPosition.x);
+            int lY = Mathf.RoundToInt(child.localPosition.y);
+
+            //local y = -x , x = y
+            int temp = lY;
+            lY = -lX;
+            lX = temp;
+            child.transform.localPosition=new Vector2(lX, lY);
+        }
     }
 }
