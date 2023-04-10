@@ -15,14 +15,16 @@ public class BlockController : MonoBehaviour
 
     public List<List<int>> locations = new();
 
-    [SerializeField] GameObject sprite;
-    [SerializeField] GameObject[,] sprites = new GameObject[10, 20];
     [SerializeField, Range(.5f, 2.5f)] float _waitToDown;
     [SerializeField] GameObject _currentObject;
     [SerializeField] List<GameObject> _blocks = new(); // j-block, t-block, s-block...
 
+    #region Test
+    [SerializeField] GameObject _sprite;
+    [SerializeField] GameObject[,] _sprites = new GameObject[10, 20];
     [SerializeField] Transform _testObject;
     [SerializeField] bool _isTest;
+    #endregion
 
     float _time;
     InputReader _inputReader;
@@ -48,13 +50,13 @@ public class BlockController : MonoBehaviour
             {
                 for (int j = 0; j < 20; j++)
                 {
-                    sprites[i, j] = Instantiate(sprite, new Vector3(i, j, 0), Quaternion.identity, _testObject);
+                    _sprites[i, j] = Instantiate(_sprite, new Vector3(i, j, 0), Quaternion.identity, _testObject);
                 }
             }
         }
 
         temp = _waitToDown;
-        PrepareToSpawn();
+        SpawnObject();
     }
 
     private void Update()
@@ -78,14 +80,26 @@ public class BlockController : MonoBehaviour
 
     }
 
-    public void PrepareToSpawn()
+    public void SpawnObject()
     {
+
         if (_isTest)
         {
             TestFunction();
         }
 
         CheckNDestroyFullRow();
+        BlockFaller();
+
+        if (_isTest)
+        {
+            TestFunction();
+        }
+        StartCoroutine(SpawnObjectWaiter(0.1f));
+    }
+
+    private void BlockFaller()
+    {
         while (_isDestroyed)
         {
             if (_isTest)
@@ -96,27 +110,59 @@ public class BlockController : MonoBehaviour
             _isDestroyed = false;
             _waitToDown = 0;
 
-            foreach (Transform child in transform)
+            //foreach (Transform child in transform)
+            //{
+            //    //child.GetComponent<Block>().BlockFaller();
+            //}
+            for (int y = 0; y < BOUNDARY_Y; y++)
             {
-                child.GetComponent<Block>().BlockFaller();
+                for (int x = 0; x < BOUNDARY_X; x++)
+                {
+                    GameObject currentObject = cells[x, y];
+                    if (currentObject == null)
+                        continue;
+
+                    //düsme islemi
+                    int posX = Mathf.RoundToInt(currentObject.transform.position.x);
+                    int posY = Mathf.RoundToInt(currentObject.transform.position.y);
+                    cells[posX, posY] = null;
+
+                    while (true)
+                    {
+                        posY--;
+                        if (posY < 0)
+                        {
+                            break;
+                        }// Y bottom boundary check
+                        else if (cells[posX, posY] != null)
+                        {
+                            break;
+                        }
+                    }
+                    posY++;
+                    currentObject.transform.position = new Vector2(posX, posY);
+                    cells[posX, posY] = currentObject;
+                }
+
+
+                CheckNDestroyFullRow();
             }
-
-            CheckNDestroyFullRow();
         }
-        if (_isTest)
-        {
-            TestFunction();
-        }
-
-        StartCoroutine(SpawnBlockFunc());
     }
 
-    private IEnumerator SpawnBlockFunc()
+    private IEnumerator SpawnObjectWaiter(float second)
     {
+
+        yield return new WaitForSeconds(second);
+
         _waitToDown = temp;
 
-        yield return new WaitForEndOfFrame();//bak
         CurrentObject = Instantiate(GetRandomItemFromList(Blocks), transform);
+
+        if (cells[Mathf.RoundToInt(CurrentObject.transform.position.x), Mathf.RoundToInt(CurrentObject.transform.position.y)] != null)
+        {
+            GameManager.Instance.GameOver();
+        }
 
         _currentBlock = CurrentObject.GetComponent<Block>();
 
@@ -131,10 +177,10 @@ public class BlockController : MonoBehaviour
             {
                 if (cells[i, j] == null)
                 {
-                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.black;
+                    _sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.black;
                 }
                 else
-                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.grey;
+                    _sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.grey;
             }
         }
     }
@@ -175,3 +221,4 @@ public class BlockController : MonoBehaviour
 
 
 }
+

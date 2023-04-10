@@ -10,11 +10,6 @@ public class Block : MonoBehaviour
     InputReader _inputReader;
     [SerializeField] bool _canRotate;
 
-    //[SerializeField] Vector3 birVector;
-    //[SerializeField] Vector3 ikiVector;
-    //[SerializeField] Vector3 ucVector;
-    //[SerializeField] Vector3 dortVector;
-
     public bool CanRotate { get => _canRotate; private set => _canRotate = value; }
 
     private void Awake()
@@ -24,20 +19,6 @@ public class Block : MonoBehaviour
         _blockController = _gameController.GetComponent<BlockController>();
 
         _inputReader = _gameController.GetComponent<InputReader>();
-    }
-
-    private void Update()
-    {
-
-        //birVector.x = Mathf.RoundToInt(transform.GetChild(0).transform.position.x);
-        //ikiVector.x = Mathf.RoundToInt(transform.GetChild(1).transform.position.x);
-        //ucVector.x = Mathf.RoundToInt(transform.GetChild(2).transform.position.x);
-        //dortVector.x = Mathf.RoundToInt(transform.GetChild(3).transform.position.x);
-
-        //birVector.y = Mathf.RoundToInt(transform.GetChild(0).transform.position.y);
-        //ikiVector.y = Mathf.RoundToInt(transform.GetChild(1).transform.position.y);
-        //ucVector.y = Mathf.RoundToInt(transform.GetChild(2).transform.position.y);
-        //dortVector.y = Mathf.RoundToInt(transform.GetChild(3).transform.position.y);
     }
 
     public void HorizontalMove()
@@ -50,7 +31,7 @@ public class Block : MonoBehaviour
         int y = Mathf.RoundToInt(transform.position.y);
         x += horizontal;
 
-        Vector2 position = new Vector2(x, y);
+        Vector2 position = new(x, y);
         SetPosition(position);
     }
 
@@ -167,14 +148,41 @@ public class Block : MonoBehaviour
         }
     }
 
-    public void BlockFaller()
-    {
-        foreach (Transform child in transform)
-        {
-            _blockController.cells[Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y)] = null;
-        }
-        StartCoroutine(MoveDown(false));
-    }
+    //public void BlockFaller()
+    //{
+    //    foreach (Transform child in transform)
+    //    {
+    //        int x = Mathf.RoundToInt(child.position.x);
+    //        int y = Mathf.RoundToInt(child.position.y);
+    //        _blockController.cells[x, y] = null;
+
+    //        while (true)
+    //        {
+    //            y--;
+    //            if (y < 0)
+    //            {
+    //                break;
+    //            }// Y bottom boundary check
+
+    //            if (_blockController.cells[x, y] != null)
+    //            {
+    //                break;
+    //            }
+
+                
+    //            //if (y >= 0)
+    //            //{
+    //            //    if (_blockController.cells[x, y] == null)
+    //            //    {
+                        
+    //            //    }
+    //            //}// Y bottom boundary check
+    //        }
+    //        y++;
+    //        child.transform.position = new Vector2(x, y);
+    //        _blockController.cells[x, y] = child.gameObject;
+    //    }
+    //}
 
     public IEnumerator MoveDown(bool canSpawn)
     {
@@ -189,7 +197,7 @@ public class Block : MonoBehaviour
                     _blockController.cells[Mathf.RoundToInt(child.position.x), Mathf.RoundToInt(child.position.y)] = child.gameObject;
                 }
                 if (canSpawn)
-                    _blockController.PrepareToSpawn();
+                    _blockController.SpawnObject();
                 break;
             }
 
