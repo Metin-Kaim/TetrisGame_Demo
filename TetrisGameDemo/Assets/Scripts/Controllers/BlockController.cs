@@ -17,15 +17,18 @@ public class BlockController : MonoBehaviour
 
     [SerializeField] GameObject sprite;
     [SerializeField] GameObject[,] sprites = new GameObject[10, 20];
+    [SerializeField, Range(.5f, 2.5f)] float _waitToDown;
+    [SerializeField] GameObject _currentObject;
+    [SerializeField] List<GameObject> _blocks = new(); // j-block, t-block, s-block...
+
+    [SerializeField] Transform _testObject;
+    [SerializeField] bool _isTest;
 
     float _time;
     InputReader _inputReader;
     float temp;
     Block _currentBlock;
-
-    [SerializeField, Range(.5f, 2.5f)] float _waitToDown;
-    [SerializeField] GameObject _currentObject;
-    [SerializeField] List<GameObject> _blocks = new(); // j-block, t-block, s-block...
+    bool _isDestroyed;
 
     public float WaitToDown => _waitToDown;
     public GameObject CurrentObject { get => _currentObject; set => _currentObject = value; }
@@ -39,15 +42,19 @@ public class BlockController : MonoBehaviour
 
     private void Start()
     {
-        temp = _waitToDown;
-        for (int i = 0; i < 10; i++)
+        if (_isTest)
         {
-            for (int j = 0; j < 20; j++)
+            for (int i = 0; i < 10; i++)
             {
-                sprites[i, j] = Instantiate(sprite, new Vector3(i, j, 0), Quaternion.identity);
+                for (int j = 0; j < 20; j++)
+                {
+                    sprites[i, j] = Instantiate(sprite, new Vector3(i, j, 0), Quaternion.identity, _testObject);
+                }
             }
         }
-        SpawnBlock();
+
+        temp = _waitToDown;
+        PrepareToSpawn();
     }
 
     private void Update()
@@ -64,14 +71,59 @@ public class BlockController : MonoBehaviour
                 _waitToDown = temp;
 
 
-            if (_inputReader.IsPressedRotate)
+            if (_currentBlock.CanRotate && _inputReader.IsPressedRotate)
                 _currentBlock.Rotate();
         }
 
 
     }
 
-    public void SpawnBlock()
+    public void PrepareToSpawn()
+    {
+        if (_isTest)
+        {
+            TestFunction();
+        }
+
+        CheckNDestroyFullRow();
+        while (_isDestroyed)
+        {
+            if (_isTest)
+            {
+                TestFunction();
+            }
+
+            _isDestroyed = false;
+            _waitToDown = 0;
+
+            foreach (Transform child in transform)
+            {
+                child.GetComponent<Block>().BlockFaller();
+            }
+
+            CheckNDestroyFullRow();
+        }
+        if (_isTest)
+        {
+            TestFunction();
+        }
+
+        StartCoroutine(SpawnBlockFunc());
+    }
+
+    private IEnumerator SpawnBlockFunc()
+    {
+        _waitToDown = temp;
+
+        yield return new WaitForEndOfFrame();//bak
+        CurrentObject = Instantiate(GetRandomItemFromList(Blocks), transform);
+
+        _currentBlock = CurrentObject.GetComponent<Block>();
+
+        StartCoroutine(_currentBlock.MoveDown(true));
+    }
+
+    private void TestFunction()
     {
         for (int i = 0; i < 10; i++)
         {
@@ -79,23 +131,47 @@ public class BlockController : MonoBehaviour
             {
                 if (cells[i, j] == null)
                 {
-                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.red;
+                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.black;
                 }
                 else
-                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.green;
+                    sprites[i, j].GetComponent<SpriteRenderer>().material.color = Color.grey;
             }
         }
-        CurrentObject = Instantiate(GetRandomItemFromList(Blocks), transform);
-
-        _currentBlock = CurrentObject.GetComponent<Block>();
-
-        StartCoroutine(_currentBlock.MoveDown());
     }
 
     private GameObject GetRandomItemFromList(List<GameObject> list)
     {
         return list[Random.Range(0, list.Count)];
     }
+
+    public void CheckNDestroyFullRow()
+    {
+        bool isFull;
+
+        for (int y = 0; y < BOUNDARY_Y; y++)
+        {
+            isFull = true;
+            for (int x = 0; x < BOUNDARY_X; x++)
+            {
+                if (cells[x, y] == null)
+                {
+                    isFull = false;
+                    break;
+                }
+            }
+            if (isFull)
+            {
+                for (int x = 0; x < BOUNDARY_X; x++)
+                {
+                    _isDestroyed = true;
+                    Destroy(cells[x, y]);
+                    cells[x, y] = null;
+                }
+            }
+
+        }
+    }
+
 
 
 }

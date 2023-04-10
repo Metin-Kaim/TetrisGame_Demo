@@ -384,6 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d1d455e29b5efa4fa5d739302d30695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canRotate: 1
   birVector: {x: 0, y: 0, z: 0}
   ikiVector: {x: 0, y: 0, z: 0}
   ucVector: {x: 0, y: 0, z: 0}

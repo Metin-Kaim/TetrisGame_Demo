@@ -11,6 +11,9 @@
 [x] Objeleri dondurme islemini yap
 	[x] Objeleri dondurme
 	[x] objelerin dondurme islemi icin kontrol sistemi
-[ ] Bir sutun tamamen doldugunda patlama islemi
+[>] Bir satir tamamen doldugunda patlama islemi
+	[x] Dolu olan satýrý patlat
+	[x] Üst satýrlarý düþür
+	[>] Düsme islemi bitmeden spawn olmasin
 [ ] GameOver
 [?] Score
