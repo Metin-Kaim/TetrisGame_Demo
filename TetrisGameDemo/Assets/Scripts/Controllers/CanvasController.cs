@@ -11,12 +11,12 @@ public class CanvasController : MonoBehaviour
         _gameOverPanel.SetActive(false);
     }
 
-    private void OnEnable()
+    public void OnEnable()
     {
         GameManager.Instance.GameOverEvent += GameOverPanel;
     }
 
-    private void OnDisable()
+    public void OnDisable()
     {
         GameManager.Instance.GameOverEvent -= GameOverPanel;
     }

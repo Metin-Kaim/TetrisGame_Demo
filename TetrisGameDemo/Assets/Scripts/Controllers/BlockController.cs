@@ -18,6 +18,7 @@ public class BlockController : MonoBehaviour
     [SerializeField, Range(.5f, 2.5f)] float _waitToDown;
     [SerializeField] GameObject _currentObject;
     [SerializeField] List<GameObject> _blocks = new(); // j-block, t-block, s-block...
+    [SerializeField] ParticleSystem _explodeEffect;
 
     #region Test
     [SerializeField] GameObject _sprite;
@@ -207,6 +208,8 @@ public class BlockController : MonoBehaviour
             }
             if (isFull)
             {
+                Instantiate(_explodeEffect, new Vector2(4.5f, y), Quaternion.identity);
+
                 for (int x = 0; x < BOUNDARY_X; x++)
                 {
                     _isDestroyed = true;

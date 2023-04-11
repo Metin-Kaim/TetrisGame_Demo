@@ -133,10 +133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canRotate: 1
-  birVector: {x: 0, y: 0, z: 0}
-  ikiVector: {x: 0, y: 0, z: 0}
-  ucVector: {x: 0, y: 0, z: 0}
-  dortVector: {x: 0, y: 0, z: 0}
 --- !u!1 &3454711113169484578
 GameObject:
   m_ObjectHideFlags: 0
